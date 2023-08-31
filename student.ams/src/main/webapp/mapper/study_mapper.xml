@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Study">
+
+	<resultMap id="StudyMap" type="Study">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="s_id" property="s_id" jdbcType="VARCHAR"/>
+		<result column="s_name" property="s_name" jdbcType="VARCHAR"/>
+		<result column="s_major" property="s_major" jdbcType="VARCHAR"/>
+		<result column="c_id" property="c_id" jdbcType="VARCHAR"/>
+		<result column="c_name" property="c_name" jdbcType="VARCHAR"/>
+		<result column="c_belong" property="c_belong" jdbcType="VARCHAR"/>
+		<result column="c_credit" property="c_credit" jdbcType="VARCHAR"/>
+		<result column="c_semester" property="c_semester" jdbcType="VARCHAR"/>
+		<result column="time1" property="time1" jdbcType="INTEGER"/>
+		<result column="time2" property="time2" jdbcType="INTEGER"/>
+		<result column="eventId" property="eventId" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		`id`,`s_id`,`s_name`,`s_major`,`c_id`,`c_name`,`c_belong`,`c_credit`,`c_semester`,`time1`,`time2`,`eventId`
+	</sql>
+	
+	<!-- 根據課程id和學生id獲取選課信息 -->
+	<select id="selectByStuIdAndClzId" resultMap="StudyMap" parameterType="Study">
+		select <include refid="Base_Column_List"/>
+		from `study` where c_id = #{clzId} and s_id = #{stuId}
+	</select>
+	
+	<!-- 添加選課紀錄到選課表 -->
+	<insert id="insert">
+		insert into `study` (`s_id`,`s_name`,`s_major`,`c_id`,`c_name`,`c_belong`,`c_credit`,`c_semester`,`time1`,`time2`,`eventId`)
+		values(
+			#{s_id,jdbcType=VARCHAR},
+			#{s_name,jdbcType=VARCHAR},
+			#{s_major,jdbcType=VARCHAR},
+			#{c_id,jdbcType=VARCHAR},
+			#{c_name,jdbcType=VARCHAR},
+			#{c_belong,jdbcType=VARCHAR},
+			#{c_credit,jdbcType=VARCHAR},
+			#{c_semester,jdbcType=VARCHAR},
+			#{time1,jdbcType=INTEGER},
+			#{time2,jdbcType=INTEGER},
+			#{eventId,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<!-- 查看選擇該課程的所有學生 -->
+	<select id="selectByClzId" resultMap="StudyMap" parameterType="java.util.Map">
+		select <include refid="Base_Column_List"/>
+		from `study` where `c_id` = #{clzId}
+	</select>
+	
+	
+	<!-- 分頁查看選擇該課程的所有學生 -->
+	<select id="selectPageByClzId" resultMap="StudyMap" parameterType="java.util.Map">
+		select <include refid="Base_Column_List"/>
+		from `study` where `c_id` = #{clzId} limit #{pageNo},#{rows}
+	</select>
+	
+	
+	<!-- 查看我的選課列表 -->
+	<select id="selectByStuId" resultMap="StudyMap" parameterType="java.util.Map">
+		select <include refid="Base_Column_List"/>
+		from `study` where `s_id` = #{stuId}
+	</select>
+	
+	
+	<!-- 分頁查看我的選課列表 -->
+	<select id="selectPageByStuId" resultMap="StudyMap" parameterType="java.util.Map">
+		select <include refid="Base_Column_List"/>
+		from `study` where `s_id` = #{stuId} limit #{pageNo},#{rows}
+	</select>
+	
+	<!-- 刪除我的課程 -->
+	<delete id="delete" parameterType="java.util.Map">
+		delete from `study` where `c_id` = #{clzId} and `s_id` = #{stuId}
+	</delete>
+	
+	
+</mapper>
+

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Admin">
+
+	<resultMap id="AdminMap" type="Admin">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="pwd" property="pwd" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<!-- 根據用戶名獲取用戶信息 -->
+	<select id="selectById" resultMap="AdminMap" parameterType="java.util.Map">
+		select * from `admin` where `id`=#{id} 
+	</select>
+	
+	<!-- 添加課程信息 -->
+	<insert id="insertClz" parameterType="Course">
+		INSERT INTO `course`(`id`,`name`,`semester`,`time1`,`time2`,`credit`,`belong`,`place`,`amount`,`detail`,`selected`)
+		VALUES(#{id,jdbcType=VARCHAR},
+			#{name,jdbcType=VARCHAR},
+			#{semester,jdbcType=VARCHAR},
+			#{time1,jdbcType=INTEGER},
+			#{time2,jdbcType=INTEGER},
+			#{credit,jdbcType=VARCHAR},
+			#{belong,jdbcType=VARCHAR},
+			#{place,jdbcType=VARCHAR},
+			#{amount,jdbcType=INTEGER},
+			#{detail,jdbcType=VARCHAR},
+			#{selected,jdbcType=INTEGER})
+	</insert>
+	
+	<resultMap id="courseMap" type="Course">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="name" property="name" jdbcType="VARCHAR"/>
+		<result column="semester" property="semester" jdbcType="VARCHAR"/>
+		<result column="time1" property="time1" jdbcType="INTEGER"/>
+		<result column="time2" property="time2" jdbcType="INTEGER"/>
+		<result column="credit" property="credit" jdbcType="VARCHAR"/>
+		<result column="belong" property="belong" jdbcType="VARCHAR"/>
+		<result column="place" property="place" jdbcType="VARCHAR"/>
+		<result column="amount" property="amount" jdbcType="INTEGER"/>
+		<result column="detail" property="detail" jdbcType="VARCHAR"/>
+		<result column="selected" property="selected" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	<!-- 獲取所有課程 -->
+	<select id="selectAllCourses" resultMap="courseMap">
+		select * from `course`  
+	</select>
+	
+	<!-- 分頁獲取課程列表 -->
+	<select id="selectPageCourses" resultMap="courseMap">
+		select * from `course` limit #{pageNo},#{rows}
+	</select>
+	
+	
+	<!-- 分頁獲取搜尋課程列表 -->
+	<select id="selectSearchPageCourses" resultMap="courseMap">
+		select * from `course` 
+		where `id` like concat('%', #{keyword}, '%') or `name` like concat('%', #{keyword}, '%')
+		limit #{pageNo}, #{rows}
+	</select>
+	
+	<select id="selectCoursesPageSearchCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		select count(*) from `course` 
+		where `id` like concat('%', #{keyword}, '%') or `name` like concat('%', #{keyword}, '%')
+	</select>
+	
+	
+	<!-- 刪除課程 -->
+	<delete id="delCourse" parameterType="java.util.Map">
+		delete from `course` where `id`=#{id}
+	</delete>
+	
+	
+	
+	<resultMap id="StudentMap" type="Student">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="email" property="email" jdbcType="VARCHAR"/>
+		<result column="name" property="name" jdbcType="VARCHAR"/>
+		<result column="sex" property="sex" jdbcType="VARCHAR"/>
+		<result column="year" property="year" jdbcType="VARCHAR"/>
+		<result column="major" property="major" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	
+	<!-- 獲取所有學生列表 -->
+	<select id="selectAllStudents" resultMap="StudentMap">
+		select * from `student` order by `id`
+	</select>
+	
+	<!-- 分頁獲取學生列表 -->
+	<select id="selectPageAllStudents" resultMap="StudentMap">
+		select * from `student` order by `id` limit #{pageNo},#{rows}
+	</select>
+	
+	<!-- 分頁獲取搜尋學生列表 -->
+	<select id="selectSearchPageStudents" resultMap="StudentMap">
+		select * from `student` 
+		where `id` like concat('%', #{keyword}, '%') or `name` like concat('%', #{keyword}, '%')
+		limit #{pageNo}, #{rows}
+	</select>
+	
+	<select id="selectStudentsPageSearchCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		select count(*) from `student` 
+		where `id` like concat('%', #{keyword}, '%') or `name` like concat('%', #{keyword}, '%')
+	</select>
+	
+	
+	<!-- 添加學生信息 -->
+	<insert id="insertStudent" parameterType="Student">
+		insert into `student`(`id`,`email`,`name`,`sex`,`year`,`major`)
+		values(
+			#{id,jdbcType=VARCHAR},
+			#{email,jdbcType=VARCHAR},
+			#{name,jdbcType=VARCHAR},
+			#{sex,jdbcType=VARCHAR},
+			#{year,jdbcType=VARCHAR},
+			#{major,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<!-- 更新學生信息 -->
+	<update id="updateStudent" parameterType="java.util.Map">
+		update `student`
+		<set>
+			<if test="s.name!=null and s.name!=''">
+				`name` = #{s.name},
+			</if>
+			<if test="s.email!=null and s.email!=''">
+				`email` = #{s.email},
+			</if>
+			<if test="s.sex!=null">
+				`sex` = #{s.sex},
+			</if>
+			<if test="s.year!=null and s.year!=''">
+				`year` = #{s.year},
+			</if>
+			<if test="s.major!=null and s.major!=''">
+				`major` = #{s.major},
+			</if>
+		</set>
+		where `id`=#{s.id}
+	</update>
+	
+	<!-- 根據id獲取學生信息 -->
+	<select id="selectStuById" resultMap="StudentMap" parameterType="java.util.Map">
+		select * from `student` where `id`=#{id}
+	</select>
+	
+	<!-- 刪除學生 -->
+	<delete id="delStudent" parameterType="java.util.Map">
+		delete from `student` where `id`=#{id}
+	</delete>
+	
+	<!-- 刪除該學生的所有選課信息 -->
+	<delete id="delStudyInfoById" parameterType="java.util.Map">
+		delete from `study` where `s_id`=#{id}
+	</delete>
+	
+	<!-- 獲取所有選課信息 -->
+	<select id="selectAllStudyInfo" resultType="Study">
+		select * from `study` order by `c_id`
+	</select>
+	
+	<!-- 分頁獲取選課列表 -->
+	<select id="selectPageAllStudyInfo" resultType="Study">
+		select * from `study` order by `c_id` limit #{pageNo},#{rows}
+	</select>
+	
+	<!-- 分頁獲取查詢選課列表 -->
+	<select id="selectSearchPageStudyInfo" resultType="Study">
+		select * from `study` 
+		where `s_id` like concat('%', #{keyword}, '%') or `s_name` like concat('%', #{keyword}, '%')
+		order by `c_id` limit #{pageNo},#{rows}
+	</select>
+	
+	<select id="selectStudyInfoPageSearchCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		select count(*) from `study` 
+		where `s_id` like concat('%', #{keyword}, '%') or `s_name` like concat('%', #{keyword}, '%')
+	</select>
+	
+	
+	<!-- 根據id獲取選課信息 -->
+	<select id="selectByStudyId" resultType="Study"  parameterType="java.util.Map">
+		select * from `study` where `id` = #{id}
+	</select>
+	
+	<!-- 根據id刪除選課信息 -->
+	<delete id="delByStudyId" parameterType="java.util.Map">
+		delete from `study` where `id` = #{id}
+	</delete>
+	
+	
+</mapper>

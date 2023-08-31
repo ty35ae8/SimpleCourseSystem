@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xsi:schemaLocation="
+            http://java.sun.com/xml/ns/javaee 
+            http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+        xmlns="http://java.sun.com/xml/ns/javaee" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        version="2.1">
+	<description>A tag library exercising SimpleTag handlers.</description>
+    <tlib-version>1.0</tlib-version>
+    <short-name>common</short-name>
+    <uri>http://www.student.com/common/</uri>
+    <tag>
+		<name>page</name>
+		<tag-class>student.ams.util.NavigationTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<name>url</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+</taglib> 
